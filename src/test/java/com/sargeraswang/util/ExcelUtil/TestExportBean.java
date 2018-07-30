@@ -1,5 +1,7 @@
 package com.sargeraswang.util.ExcelUtil;
 
+import com.sargeraswang.util.ExcelUtil.core.WorkBook;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
 
 import java.io.File;
@@ -12,7 +14,7 @@ public class TestExportBean {
     @Test
     public void exportXls() throws IOException {
         //用排序的Map且Map的键应与ExcelCell注解的index对应
-        Map<String,String> map = new LinkedHashMap<>();
+        LinkedHashMap<String,String> map = new LinkedHashMap<>();
         map.put("a","姓名");
         map.put("b","年龄");
         map.put("c","性别");

@@ -11,13 +11,9 @@ import java.util.Date;
  * @author SargerasWang Created at 2014年8月7日 下午5:09:29
  */
 public class Model {
-    @ExcelCell(index = 0)
     private String a;
-    @ExcelCell(index = 1)
     private String b;
-    @ExcelCell(index = 2)
     private String c;
-    @ExcelCell(index = 3)
     private Date d;
 
     public Date getD() {

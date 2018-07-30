@@ -1,6 +1,7 @@
 package com.sargeraswang.util.ExcelUtil;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Map;
  */
 public class ExcelSheet<T> {
     private String sheetName;
-    private Map<String,String> headers;
+    private LinkedHashMap<String,String> headers;
     private Collection<T> dataset;
 
     /**
@@ -36,7 +37,7 @@ public class ExcelSheet<T> {
      * 
      * @return the headers
      */
-    public Map<String,String> getHeaders() {
+    public LinkedHashMap<String,String> getHeaders() {
         return headers;
     }
 
@@ -44,7 +45,7 @@ public class ExcelSheet<T> {
      * @param headers
      *            the headers to set
      */
-    public void setHeaders(Map<String,String> headers) {
+    public void setHeaders(LinkedHashMap<String,String> headers) {
         this.headers = headers;
     }
 

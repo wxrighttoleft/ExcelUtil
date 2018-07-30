@@ -39,7 +39,7 @@ public class TestExportMap {
     list.add(map);
     list.add(map2);
     list.add(map3);
-    Map<String,String> map1 = new LinkedHashMap<>();
+    LinkedHashMap<String,String> map1 = new LinkedHashMap<>();
     map1.put("name","姓名");
     map1.put("age","年龄");
     map1.put("birthday","出生日期");
