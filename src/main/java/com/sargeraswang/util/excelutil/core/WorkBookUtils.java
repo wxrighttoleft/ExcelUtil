@@ -15,15 +15,15 @@ import java.io.InputStream;
  * @authro xkj [zhuiqiuxinf@163.com]
  * @version 1.3.0
  */
-public class WorkBook {
+public class WorkBookUtils {
 
-    private WorkBook(){}
+    private WorkBookUtils(){}
 
-    private static WorkBook instance;
+    private static WorkBookUtils instance;
 
-    public static synchronized WorkBook getInstance() {
+    public static synchronized WorkBookUtils getInstance() {
         if (instance == null) {
-            instance = new WorkBook();
+            instance = new WorkBookUtils();
         }
         return instance;
     }

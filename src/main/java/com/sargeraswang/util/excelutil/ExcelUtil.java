@@ -42,6 +42,16 @@ public class ExcelUtil {
         validateMap.put(Boolean.class, new CellType[]{CellType.BOOLEAN});
     }
 
+    private Extension extension;
+
+    public ExcelUtil() {
+        this.extension = Extension.XLS;
+    }
+
+    public ExcelUtil(Extension extension) {
+        this.extension = extension;
+    }
+
     /**
      * 获取cell类型的文字描述
      *
@@ -125,8 +135,8 @@ public class ExcelUtil {
      *                javabean属性的数据类型有基本数据类型及String,Date,String[],Double[]
      * @param out     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
      */
-    public static <T> void exportExcel(LinkedHashMap<String,String> headers, Collection<T> dataset, OutputStream out) {
-        exportExcel(headers, dataset, out, new DefaultStyleRule());
+    public <T> void exportExcel(LinkedHashMap<String,String> headers, Collection<T> dataset, OutputStream out) {
+        exportExcel(headers, dataset, out, null);
     }
 
     /**
@@ -140,13 +150,18 @@ public class ExcelUtil {
      * @param out     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
      * @param rule      样式规则，个性化表格
      */
-    public static <T> void exportExcel(LinkedHashMap<String,String> headers, Collection<T> dataset, OutputStream out, StyleRule rule) {
+    public <T> void exportExcel(LinkedHashMap<String,String> headers, Collection<T> dataset, OutputStream out, StyleSetup rule) {
         // 声明一个工作薄
-        Workbook workbook = WorkBook.getInstance().getWorkBook(Extension.XLSX);
+        Workbook workbook = WorkBookUtils.getInstance().getWorkBook(this.extension);
         // 生成一个表格
         Sheet sheet = workbook.createSheet();
 
-        new SheetUtils(rule).write2Sheet(sheet, headers, dataset);
+        if (rule != null) {
+            rule.init(workbook);
+            rule.afterCreated(sheet);
+        }
+
+        SheetUtils.getInstance().write2Sheet(sheet, headers, dataset, rule);
         try {
             workbook.write(out);
         } catch (IOException e) {
@@ -154,7 +169,7 @@ public class ExcelUtil {
         }
     }
 
-    public static void exportExcel(String[][] datalist, OutputStream out) {
+    public void exportExcel(String[][] datalist, OutputStream out) {
         try {
             // 声明一个工作薄
             HSSFWorkbook workbook = new HSSFWorkbook();
@@ -195,8 +210,8 @@ public class ExcelUtil {
      * @param sheets {@link ExcelSheet}的集合
      * @param out    与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
      */
-    public static <T> void exportExcel(List<ExcelSheet<T>> sheets, OutputStream out) {
-        exportExcel(sheets, out, new DefaultStyleRule());
+    public <T> void exportExcel(List<ExcelSheet<T>> sheets, OutputStream out) {
+        exportExcel(sheets, out, null);
     }
 
     /**
@@ -207,16 +222,22 @@ public class ExcelUtil {
      * @param sheets  {@link ExcelSheet}的集合
      * @param out     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
      */
-    public static <T> void exportExcel(List<ExcelSheet<T>> sheets, OutputStream out, StyleRule rule) {
+    public <T> void exportExcel(List<ExcelSheet<T>> sheets, OutputStream out, StyleSetup rule) {
         if (CollectionUtils.isEmpty(sheets)) {
             return;
         }
         // 声明一个工作薄
-        HSSFWorkbook workbook = new HSSFWorkbook();
+        Workbook workbook = WorkBookUtils.getInstance().getWorkBook(extension);
+        if (rule != null) {
+            rule.init(workbook);
+        }
         for (ExcelSheet<T> sheet : sheets) {
             // 生成一个表格
-            HSSFSheet hssfSheet = workbook.createSheet(sheet.getSheetName());
-            new SheetUtils(rule).write2Sheet(hssfSheet, sheet.getHeaders(), sheet.getDataset());
+            Sheet s = workbook.createSheet(sheet.getSheetName());
+            if (rule != null) {
+                rule.afterCreated(s);
+            }
+            SheetUtils.getInstance().write2Sheet(s, sheet.getHeaders(), sheet.getDataset(), rule);
         }
         try {
             workbook.write(out);

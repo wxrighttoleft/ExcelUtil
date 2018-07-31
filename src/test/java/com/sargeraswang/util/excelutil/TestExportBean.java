@@ -1,5 +1,6 @@
 package com.sargeraswang.util.excelutil;
 
+import com.sargeraswang.util.excelutil.core.Extension;
 import org.junit.Test;
 
 import java.io.*;
@@ -27,7 +28,7 @@ public class TestExportBean {
         File f=new File("test.xlsx");
         OutputStream out =new FileOutputStream(f);
         
-        ExcelUtil.exportExcel(map, dataset, out);
+        new ExcelUtil(Extension.XLSX).exportExcel(map, dataset, out, new DefaultStyleRule());
 
     }
 }

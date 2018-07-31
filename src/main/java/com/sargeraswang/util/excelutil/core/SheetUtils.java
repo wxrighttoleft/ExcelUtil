@@ -19,33 +19,27 @@ import java.util.*;
 
 public class SheetUtils {
     private static Logger LG = LoggerFactory.getLogger(SheetUtils.class);
-
-    private StyleRule styleRule;
-
-    public SheetUtils() {}
-
-    public SheetUtils(StyleRule rule) {
-        this.styleRule = rule;
-    }
-
+	
+	private static SheetUtils instance;
+	
+	private SheetUtils() {}
+	
+	public static synchronized SheetUtils getInstance() {
+		if (instance == null) {
+			instance = new SheetUtils();
+		}
+		return instance;
+	}
+	
     /**
      * 每个sheet的写入
      *
-     * @param sheet   页签
-     * @param headers 表头
-     * @param dataset 数据集合
+     * @param sheet     页签
+     * @param headers   表头
+     * @param dataset   数据集合
+     * @param rule      样式规则
      */
-    public <T> void write2Sheet(Sheet sheet, LinkedHashMap<String,String> headers, Collection<T> dataset) {
-        String pattern = null;
-
-        if (styleRule != null) {
-            pattern = styleRule.getPattern();
-            styleRule.sheetApply(sheet);
-        }
-        if (StringUtils.isBlank(pattern)) {
-            pattern = "yyyy-MM-dd";
-        }
-
+    public <T> void write2Sheet(Sheet sheet, LinkedHashMap<String,String> headers, Collection<T> dataset, StyleSetup rule) {
         int rowIndex = 0;
 
         // region --------标题行设置-------------
@@ -55,11 +49,7 @@ public class SheetUtils {
             for (Iterator<Map.Entry<String, String>> iterator = headers.entrySet().iterator(); iterator.hasNext();) {
                 Map.Entry<String, String> entry = iterator.next();
                 Cell cell = headerRow.createCell(cellIndex);
-                setCellValue(cell, entry.getValue(), pattern);
-                // 如果设置了样式规则，则应用已协议好的样式规则
-                if (styleRule != null) {
-                    styleRule.cellApply(cell);
-                }
+                setCellValue(cell, entry.getValue(), rule);
                 cellIndex++;
             }
             rowIndex++;
@@ -77,13 +67,9 @@ public class SheetUtils {
                     Cell cell = dataRow.createCell(cellIndex);
                     if (dataItem instanceof Map) {
                         Map map = (Map)dataItem;
-                        setCellValue(cell, map.get(headerItem.getKey()), pattern);
+                        setCellValue(cell, map.get(headerItem.getKey()), rule);
                     } else {
-                        setCellValue(cell, ReflectUtils.getValue(dataItem, headerItem.getKey()), pattern);
-                    }
-                    // 如果设置了样式规则，则应用已协议好的样式规则
-                    if (styleRule != null) {
-                        styleRule.cellApply(cell);
+                        setCellValue(cell, ReflectUtils.getValue(dataItem, headerItem.getKey()), rule);
                     }
                     cellIndex++;
                 }
@@ -91,9 +77,13 @@ public class SheetUtils {
             }
         }
         // endregion
+
+        if (rule != null) {
+            rule.afterData(sheet);
+        }
     }
 
-    public void setCellValue(Cell cell, Object value, String pattern){
+    public void setCellValue(Cell cell, Object value, StyleSetup rule){
         String textValue = null;
         if (value instanceof Integer) {
             int intValue = (Integer) value;
@@ -112,6 +102,11 @@ public class SheetUtils {
             cell.setCellValue(bValue);
         } else if (value instanceof Date) {
             Date date = (Date) value;
+            String pattern = null;
+            if (rule != null)
+                pattern = rule.getPattern();
+            if (StringUtils.isBlank(pattern))
+				pattern = "yyyy-MM-dd";
             SimpleDateFormat sdf = new SimpleDateFormat(pattern);
             textValue = sdf.format(date);
         } else if (value instanceof String[]) {
@@ -135,6 +130,9 @@ public class SheetUtils {
             }
             cell.setCellValue(richString);
         }
+        if (rule != null) {
+			rule.cellApply(cell);
+		}
         LG.debug(String.format("填充第[%d,%d]数据：%s", cell.getRowIndex(), cell.getColumnIndex(), value));
     }
 }
