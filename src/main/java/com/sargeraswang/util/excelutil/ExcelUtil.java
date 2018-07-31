@@ -1,8 +1,6 @@
-package com.sargeraswang.util.ExcelUtil;
+package com.sargeraswang.util.excelutil;
 
-import com.sargeraswang.util.ExcelUtil.core.Extension;
-import com.sargeraswang.util.ExcelUtil.core.SheetUtils;
-import com.sargeraswang.util.ExcelUtil.core.WorkBook;
+import com.sargeraswang.util.excelutil.core.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
@@ -128,7 +126,7 @@ public class ExcelUtil {
      * @param out     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
      */
     public static <T> void exportExcel(LinkedHashMap<String,String> headers, Collection<T> dataset, OutputStream out) {
-        exportExcel(headers, dataset, out, null);
+        exportExcel(headers, dataset, out, new DefaultStyleRule());
     }
 
     /**
@@ -140,15 +138,15 @@ public class ExcelUtil {
      * @param dataset 需要显示的数据集合,集合中一定要放置符合javabean风格的类的对象。此方法支持的
      *                javabean属性的数据类型有基本数据类型及String,Date,String[],Double[]
      * @param out     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
-     * @param pattern 如果有时间数据，设定输出格式。默认为"yyy-MM-dd"
+     * @param rule      样式规则，个性化表格
      */
-    public static <T> void exportExcel(LinkedHashMap<String,String> headers, Collection<T> dataset, OutputStream out, String pattern) {
+    public static <T> void exportExcel(LinkedHashMap<String,String> headers, Collection<T> dataset, OutputStream out, StyleRule rule) {
         // 声明一个工作薄
-        Workbook workbook = WorkBook.getInstance().getWorkBook(Extension.XLS);
+        Workbook workbook = WorkBook.getInstance().getWorkBook(Extension.XLSX);
         // 生成一个表格
         Sheet sheet = workbook.createSheet();
 
-        new SheetUtils().write2Sheet(sheet, headers, dataset, pattern);
+        new SheetUtils(rule).write2Sheet(sheet, headers, dataset);
         try {
             workbook.write(out);
         } catch (IOException e) {
@@ -198,7 +196,7 @@ public class ExcelUtil {
      * @param out    与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
      */
     public static <T> void exportExcel(List<ExcelSheet<T>> sheets, OutputStream out) {
-        exportExcel(sheets, out, null);
+        exportExcel(sheets, out, new DefaultStyleRule());
     }
 
     /**
@@ -208,9 +206,8 @@ public class ExcelUtil {
      * @param <T>
      * @param sheets  {@link ExcelSheet}的集合
      * @param out     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
-     * @param pattern 如果有时间数据，设定输出格式。默认为"yyy-MM-dd"
      */
-    public static <T> void exportExcel(List<ExcelSheet<T>> sheets, OutputStream out, String pattern) {
+    public static <T> void exportExcel(List<ExcelSheet<T>> sheets, OutputStream out, StyleRule rule) {
         if (CollectionUtils.isEmpty(sheets)) {
             return;
         }
@@ -219,7 +216,7 @@ public class ExcelUtil {
         for (ExcelSheet<T> sheet : sheets) {
             // 生成一个表格
             HSSFSheet hssfSheet = workbook.createSheet(sheet.getSheetName());
-            new SheetUtils().write2Sheet(hssfSheet, sheet.getHeaders(), sheet.getDataset(), pattern);
+            new SheetUtils(rule).write2Sheet(hssfSheet, sheet.getHeaders(), sheet.getDataset());
         }
         try {
             workbook.write(out);
@@ -227,8 +224,6 @@ public class ExcelUtil {
             LG.error(e.toString(), e);
         }
     }
-
-
 
     /**
      * 把Excel的数据封装成voList

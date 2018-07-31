@@ -1,7 +1,7 @@
 /**
  * @author SargerasWang
  */
-package com.sargeraswang.util.ExcelUtil;
+package com.sargeraswang.util.excelutil;
 
 import org.junit.Test;
 
@@ -46,7 +46,7 @@ public class TestExportMap {
     map1.put("sex","性别");
     File f= new File("test.xls");
     OutputStream out = new FileOutputStream(f);
-    ExcelUtil.exportExcel(map1,list, out );
+    new ExcelUtil().exportExcel(map1,list, out );
     out.close();
   }
 }

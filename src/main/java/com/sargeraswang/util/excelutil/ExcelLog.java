@@ -1,4 +1,4 @@
-package com.sargeraswang.util.ExcelUtil;
+package com.sargeraswang.util.excelutil;
 
 /**
  * The <code>ExcelLog</code>

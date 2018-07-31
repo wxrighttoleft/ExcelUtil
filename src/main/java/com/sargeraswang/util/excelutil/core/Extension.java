@@ -1,4 +1,4 @@
-package com.sargeraswang.util.ExcelUtil.core;
+package com.sargeraswang.util.excelutil.core;
 
 public enum Extension {
     XLS,

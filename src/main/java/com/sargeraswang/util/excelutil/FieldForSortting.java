@@ -1,4 +1,4 @@
-package com.sargeraswang.util.ExcelUtil;
+package com.sargeraswang.util.excelutil;
 
 import java.lang.reflect.Field;
 

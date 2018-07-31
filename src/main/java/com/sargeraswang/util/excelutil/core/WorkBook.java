@@ -1,6 +1,6 @@
-package com.sargeraswang.util.ExcelUtil.core;
+package com.sargeraswang.util.excelutil.core;
 
-import com.sargeraswang.util.ExcelUtil.ExcelException;
+import com.sargeraswang.util.excelutil.ExcelException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -21,11 +21,9 @@ public class WorkBook {
 
     private static WorkBook instance;
 
-    public static WorkBook getInstance() {
-        synchronized (instance) {
-            if (instance == null) {
-                instance = new WorkBook();
-            }
+    public static synchronized WorkBook getInstance() {
+        if (instance == null) {
+            instance = new WorkBook();
         }
         return instance;
     }

@@ -1,14 +1,15 @@
-package com.sargeraswang.util.ExcelUtil;
+package com.sargeraswang.util.excelutil;
 
-import com.sargeraswang.util.ExcelUtil.core.WorkBook;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.*;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashMap;
 
 public class TestExportBean {
     @Test
@@ -23,10 +24,10 @@ public class TestExportBean {
         dataset.add(new Model("", "", "",null));
         dataset.add(new Model(null, null, null,null));
         dataset.add(new Model("王五", "34", "男",new Date()));
-        File f=new File("test.xls");
+        File f=new File("test.xlsx");
         OutputStream out =new FileOutputStream(f);
         
         ExcelUtil.exportExcel(map, dataset, out);
-        out.close();
+
     }
 }

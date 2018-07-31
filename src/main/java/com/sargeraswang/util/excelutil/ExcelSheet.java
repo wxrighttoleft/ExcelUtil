@@ -1,8 +1,7 @@
-package com.sargeraswang.util.ExcelUtil;
+package com.sargeraswang.util.excelutil;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * 用于汇出多个sheet的Vo The <code>ExcelSheet</code>

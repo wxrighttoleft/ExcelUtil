@@ -1,4 +1,4 @@
-package com.sargeraswang.util.ExcelUtil;
+package com.sargeraswang.util.excelutil;
 
 public class ExcelException extends RuntimeException {
     public ExcelException(String s) {

@@ -1,7 +1,7 @@
 /**
  * @author SargerasWang
  */
-package com.sargeraswang.util.ExcelUtil;
+package com.sargeraswang.util.excelutil;
 
 import org.junit.Test;
 
