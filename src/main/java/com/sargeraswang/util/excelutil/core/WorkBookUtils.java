@@ -2,7 +2,9 @@ package com.sargeraswang.util.excelutil.core;
 
 import com.sargeraswang.util.excelutil.ExcelException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
@@ -41,22 +43,21 @@ public class WorkBookUtils {
     public Workbook getWorkBook(String templatePath){
         File file = new File(templatePath);
         try {
-            return getWorkBook(Extension.type(templatePath), new FileInputStream(file));
+            FileInputStream fis = new FileInputStream(file);
+            return WorkbookFactory.create(fis);
         } catch (IOException e) {
-            throw new ExcelException(String.format("occurred a error at get file. file path is \"%s\"", templatePath), e);
+            throw new ExcelException(String.format("occurred a error at get file. file path is \"%s\", Please checked path of files is correct or not.", templatePath), e);
+        } catch (InvalidFormatException e) {
+            throw new ExcelException(String.format("occurred a error at get file. file path is \"%s\", Please checked can normal open for files.", templatePath), e);
         }
     }
 
-    public Workbook getWorkBook(Extension extension, InputStream input) {
+    public Workbook getWorkBook(InputStream input) {
         try {
-            switch (extension) {
-                case XLSX:
-                    return new XSSFWorkbook(input);
-                case XLS:
-                default:
-                    return new HSSFWorkbook(input);
-            }
+            return WorkbookFactory.create(input);
         } catch (IOException e) {
+            throw new ExcelException("occurred a error at get file.", e);
+        } catch (InvalidFormatException e) {
             throw new ExcelException("occurred a error at get file.", e);
         }
     }
